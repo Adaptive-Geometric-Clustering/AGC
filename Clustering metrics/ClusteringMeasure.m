@@ -53,7 +53,7 @@ AdjRandIndx = ARI_t/ARI_d;
 % ACC = accuracy(true_labels,cluster_labels);
 % else
 % ACC = 0;
- res = bestMap(true_labels,cluster_labels); %gnd ԭʼ��ǩ index :n*1 �õ���ǩ % gnd:n*1
+ res = bestMap(true_labels,cluster_labels); %gnd Ô­Ê¼±êÇ© index :n*1 µÃµ½±êÇ© % gnd:n*1
  ACC = length(find(true_labels == res))/length(true_labels);
 % end
 [NMI] = nmi( cluster_labels, true_labels);
