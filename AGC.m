@@ -40,14 +40,25 @@ for iteration=1:500
     WW=update_WW(lambda,d,C);
     dist1=compute_dist1(WW,d,p,X,n,V,P);
     for iter = 1:1
-         m=theta+1;
-         E = repmat(m, p, 1);
-         W3=(W.^ E).*log(W+0.00001);
-         grad=sum((dist1) .* W3)+rho*sign(theta);
-         h=sum((dist1) .* (W3.*log(W+0.00001)));
-         h=h.^(-1); 
-         theta=max(theta-h.*grad,0);
-         objective=compute_objective(WW,theta,p,W,dist1,rho,lambda);
+        theta_old = theta;
+        objective_old = compute_objective( ...
+            WW, theta_old, p, W, dist1, rho, lambda);
+        m = theta_old + 1;
+        E = repmat(m, p, 1);
+        logW = log(W + 0.00001);
+        W3 = (W.^E) .* logW;
+        grad = sum(dist1 .* W3, 1) + rho * sign(theta_old);
+        hessian = sum(dist1 .* W3 .* logW, 1);
+        theta_new = max(theta_old - grad ./ (hessian + eps), 0);
+        objective_new = compute_objective( ...
+            WW, theta_new, p, W, dist1, rho, lambda);
+        if objective_new <= objective_old
+            theta = theta_new;
+            objective = objective_new;
+        else
+            theta = theta_old;
+            objective = objective_old;
+        end
     end
     if iteration > 1
             diff = abs(objective - objective_prev2);
